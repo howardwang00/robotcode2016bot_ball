@@ -8,7 +8,7 @@
 
 
 //primary driving code
-#define MOT_LEFT 0//Polyp edition! Unique to each robot
+#define MOT_LEFT 2//Polyp edition! Unique to each robot
 #define MOT_RIGHT 3 //Unique to each robot
 #define PI 3.14159265358979
 

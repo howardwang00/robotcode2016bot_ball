@@ -1,11 +1,12 @@
 // Created on Sun January 31 2016
 
-#include <drive.c>;
-#include <drive.h>;
-#include <generic.c>;
-#include <generic.h>;
-#include <newmenu.c>;
-#include <newmenu.h>;
+//#include <kipr/botball.h>
+
+#include "drive.h"
+#include "generic.h"
+
+#define MOT_LEFT 2
+#define MOT_RIGHT 3
 
 int main()
 {
