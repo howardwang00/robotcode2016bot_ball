@@ -5,13 +5,24 @@
 #include "drive.h"
 #include "generic.h"
 
-#define MOT_LEFT 2
-#define MOT_RIGHT 3
+#include "functions.h"
+
+//#defines in functions.h
 
 int main()
 {
 	enable_servos();
-	forward(100);
+	forward(20);
+	msleep(1000);
+	arm_up();
+	msleep(1000);
+	arm_down();
+	msleep(1000);
+	/*
+	servo(3, 1000);
+	arm_up();
+	arm_down();
+	*/
 	
 	
 	disable_servos();
