@@ -1,235 +1,254 @@
 
-#ifndef _DRIVE_H_
-#define _DRIVE_H_
+#ifndef _FINALCREATE
+#define _FINALCREATE
 
-#include <math.h>
+/*
+#define SERV_CREATEPOWER 3
+#define CREATE_POWERPRESS(); {enable_servo(SERV_CREATEPOWER);set_servo_position(SERV_CREATEPOWER,down);}
+#define CREATE_POWERUNPRESS(); {set_servo_position(SERV_CREATEPOWER,up);}*/
 
-#define gmpc(port) get_motor_position_counter(port)
+//required for buffering and scripting
+#define WHEEL_DROP 1
+#define CLIFF 10
+#define BUMP 5
+#define LEFT_BUMP 6
+#define RIGHT_BUMP 7
+#define BUTTON_ADVANCED 16
+#define BUTTON_PLAY 17//TODO: finish all events.  p16 of create docs
+#define SEN_0 18
+
+//#define get_high_byte2(a) (((a)>>8)&255)
+//#define get_low_byte2(a) ((a)&255)
+
+void create_write_int(int integer);
+
+//this is for just good old plain scripting
+void create_wait_time(int time);//time is in deciseconds
+/*void create_special_connect*/
+void create_wait_dist(int dist);//dist is in mm
+void create_wait_angle(int angle);//degrees, negative = right
+void create_wait_event(int event);//see #defines for possible answers.  Use 255-event for the inverse
+
+void create_drive_direct_dist(int r_speed, int l_speed, int dist);
+void create_drive_direct_left(int r_speed, int l_speed, int angle);
+void create_drive_direct_right(int r_speed, int l_speed, int angle);
+void create_right(int angle, int radius, int speed);
+void create_left(int angle, int radius, int speed);
+void create_forward(int dist, int speed);
+void create_backward(int dist, int speed);
+void create_crash();
+
+void output_sen_0();
+
+void stop_output();
+
+void create_send();
+void create_recieve();
+
+// blocks program until create finishes
+void create_block();
+//void create_motors(int byte){
+//so long as we are connected to the controller, no reason to use the direct motor command instead of this one
+void create_motors(int speed);//speed is from 0 to 128 inclusive
+
+/*void create_connectauto();
+void create_off();*/
+
+void create_lineup();
 
 
-//primary driving code
-#define MOT_LEFT 0//Polyp edition! Unique to each robot
-#define MOT_RIGHT 3 //Unique to each robot
-#define PI 3.14159265358979
 
-#define SPD 100//turning
-#define SPDl 100.//left forward
-#define SPDr 100.//right forward
-#define rdistmult 1.0
-#define SPDlb 100.//left backward
-#define SPDrb 100.//right backward
-#define rdistmultb (SPDrb/SPDlb)
-#define wheeldiameter 5.3 //Unique to each robot
-#define ks 14.5 //Unique to each robot
-#define CMtoBEMF (850/(PI*wheeldiameter))
+#define get_high_byte2(a) (((a)>>8)&255)
+#define get_low_byte2(a) ((a)&255)
 
-void drive_off();
-void clear_all_drive();
-void drive(int mL,int mR);
-
-
-void right(float degrees, float radius);
-void left(float degrees, float radius);
-void forward(float distance);
-void multforward(float distance, float speedmult);
-void backward(float distance);
-
-
-
-void drive_off(){
-	off(MOT_RIGHT);
-	off(MOT_LEFT);
+void create_write_int(int integer)
+{
+	create_write_byte(get_high_byte2(integer));
+	create_write_byte(get_low_byte2(integer));
 }
-void clear_all_drive(){ 
-	clear_motor_position_counter(MOT_RIGHT);
-	clear_motor_position_counter(MOT_LEFT);
+
+//this is for just good old plain scripting
+void create_wait_time(int time)//time is in deciseconds
+{
+	create_write_byte(155);
+	create_write_byte(time);
 }
-void drive(int mL,int mR){ 
-	motor(MOT_LEFT,mL);
-	motor(MOT_RIGHT,mR);
+/*void create_special_connect(){
+	serial_init();
+	create_write_byte(128);
+	create_write_byte(132);
+	create_power_led(250,254);
+	atexit(create_disconnect);
+}*/
+void create_wait_dist(int dist)//dist is in mm
+{
+	create_write_byte(156);
+	create_write_int(dist);
+}
+void create_wait_angle(int angle)//degrees, negative = right
+{
+	create_write_byte(157);
+	create_write_int(angle);
+}
+void create_wait_event(int event)//see #defines for possible answers.  Use 255-event for the inverse
+{
+	create_write_byte(158);
+	create_write_byte(event);
 }
 
-
-/*void right(float degrees, float radius){//turn right a number of degrees with a certain radius
-	int turnrspeed;
-	long turnl=((2*radius+ks)*CMtoBEMF*PI)*(degrees/360.);
-	long turnr=((2*radius-ks)*CMtoBEMF*PI)*(degrees/360.);
-	if(turnl == 0l) return;
-	turnrspeed = round((float)turnr/(float)turnl*SPD);
-	mrp(MOT_LEFT, SPD,turnl);
-	if(turnrspeed < 0) turnrspeed = -turnrspeed;
-	if(turnrspeed < 50){
-		turnrspeed = 0;
-		turnr = 0l;
-		off(MOT_RIGHT);
-		}else{
-		mrp(MOT_RIGHT,turnrspeed,turnr);
+void create_drive_direct_dist(int r_speed, int l_speed, int dist)
+{
+	create_write_byte(145);
+	create_write_int(r_speed);
+	create_write_int(l_speed);
+	create_wait_dist(dist);
+}
+void create_drive_direct_left(int r_speed, int l_speed, int angle)
+{
+	create_write_byte(145);
+	create_write_int(r_speed);
+	create_write_int(l_speed);
+	create_wait_angle(angle);
+}
+void create_drive_direct_right(int r_speed, int l_speed, int angle)
+{
+	create_write_byte(145);
+	create_write_int(r_speed);
+	create_write_int(l_speed);
+	create_wait_angle(-angle);
+}
+void create_right(int angle, int radius, int speed)
+{
+	create_write_byte(137);
+	create_write_int(speed);
+	if (radius == 0){
+		create_write_int(-1);
+	}else{
+		create_write_int(-radius);
 	}
-	bmd(MOT_RIGHT);
-	bmd(MOT_LEFT);
+	create_wait_angle(-angle);
+}
+void create_left(int angle, int radius, int speed)
+{
+	create_write_byte(137);
+	create_write_int(speed);
+	if (radius == 0){
+		create_write_int(1);
+	}else{
+		create_write_int(radius);
+	}
+	create_wait_angle(angle);
+}
+void create_forward(int dist, int speed)
+{
+	create_write_byte(145);
+	create_write_int(speed);
+	create_write_int(speed);
+	create_wait_dist(dist);
+}
+void create_backward(int dist, int speed)
+{
+	create_write_byte(145);
+	create_write_int(-speed);
+	create_write_int(-speed);
+	create_wait_dist(-dist);
+}
+void create_crash()
+{
+	create_write_byte(7);
+}
+
+void output_sen_0()
+{
+	create_write_byte(147);
+	create_write_byte((0*1)+(0*2)+(1*4));
+}
+
+void stop_output()
+{
+	create_write_byte(147);
+	create_write_byte(0);
+}
+
+void create_send(){
+	//gogo OI mode data!
+	create_write_byte(142);
+	create_write_byte(35);
+	
+}
+void create_recieve(){
+	
+	char buffer[1];
+	char *bptr = buffer;
+	create_read_block(bptr,1);
+}
+
+// blocks program until create finishes
+void create_block()
+{
+	create_stop();
+	create_send();
+	create_recieve();
+}
+/*void create_motors(int byte){
+	create_write_byte(138);
+	create_write_byte(byte);
+	//1*(pin 23)+2*(pin 22)+4*pin(24)
+	//so, pin 24 on = send 4
+	//off = send 0
+}*/
+//so long as we are connected to the controller, no reason to use the direct motor command instead of this one
+void create_motors(int speed)//speed is from 0 to 128 inclusive
+{
+	create_write_byte(144);
+	create_write_byte(speed);
+	create_write_byte(speed);
+	create_write_byte(speed);
+}
+
+/*void create_connectauto(){//automatically connects with a servo on the power button
+	if (!create_connect_once()){
+		CREATE_POWERPRESS();
+		msleep(500);
+		CREATE_POWERUNPRESS();
+		msleep(500);
+		disable_servo(serv);
+		create_connect_once();
+	}
+}
+void create_off(){
+	CREATE_POWERPRESS();
+	msleep(200);
 }*/
 
-/* \fn void right(int degrees, int radius)
- * \brief turns right degrees degrees at int radius radius
- * \param degrees degrees forward to go
- * \param radius radius at which to turn around
- */
-void right(float degrees, float radius){
-		int turnrspeed;
-		long turnl=((2*radius+ks)*CMtoBEMF*PI)*(degrees/360.);
-		long turnr=((2*radius-ks)*CMtoBEMF*PI)*(degrees/360.);
-    	if(turnl == 0l) return;
-    	turnrspeed = round((float)turnr/(float)turnl*SPD);
-    	msleep(30l);
-    	if(turnl > 0l)
-      		motor(MOT_LEFT, SPD);
-    	else
-      		motor(MOT_LEFT, -SPD);
-    	if(turnrspeed < 0) turnrspeed = -turnrspeed;
-		if(turnr > 0l)
-			motor(MOT_RIGHT, turnrspeed);
+#define lcliff get_create_lcliff_amt(.002)
+#define rcliff get_create_rcliff_amt(.002)
+void create_lineup(){//lines up the create on a black line
+	int done = 0;
+	float tstart = seconds();
+	//int retry = 1;//don't retry ever
+	while(done < 4){//WORK ON THIS
+		msleep(5);
+		int lspd,rspd;
+		lspd = rspd = 0;
+		if (lcliff > 800) lspd = 20;
+		if (lcliff < 500) lspd = -20;
+		if (rcliff > 800) rspd = 20;
+		if (rcliff < 500) rspd = -20;
+		
+		if (seconds()-tstart > 4){lspd/=2;rspd/=2;}
+		if (seconds()-tstart > 6){
+			create_stop();
+			return;//failure, timeout
+		}
+		//printf("\n%6d%6d",lcliff,rcliff);
+		create_drive_direct(lspd,rspd);
+		if (lspd == rspd && lspd == 0)
+			done++;
 		else
-			motor(MOT_RIGHT, -turnrspeed);
-    	turnl += gmpc(MOT_LEFT);
-    	turnr += gmpc(MOT_RIGHT);
-    	if(turnr - gmpc(MOT_RIGHT) > 0l){
-        	if(turnl - gmpc(MOT_LEFT) > 0l){
-            		while((turnr > gmpc(MOT_RIGHT) && turnrspeed != 0) || turnl > gmpc(MOT_LEFT)){
-                		if(turnr < gmpc(MOT_RIGHT) - 10l) off(MOT_RIGHT);
-                		if(turnl < gmpc(MOT_LEFT) - 10l) off(MOT_LEFT);
-            		}
-        	}else{
-            		while((turnr > gmpc(MOT_RIGHT) && turnrspeed != 0) || turnl < gmpc(MOT_LEFT)){
-                		if(turnr < gmpc(MOT_RIGHT) - 10l) off(MOT_RIGHT);
-                		if(turnl > gmpc(MOT_LEFT) + 10l) off(MOT_LEFT);
-            }
-        }
-    }else{
-        if(turnl - gmpc(MOT_LEFT) > 0l){
-            while((turnr < gmpc(MOT_RIGHT) && turnrspeed != 0) || turnl > gmpc(MOT_LEFT)){
-                if(turnr > gmpc(MOT_RIGHT) + 10l) off(MOT_RIGHT);
-                if(turnl < gmpc(MOT_LEFT) - 10l) off(MOT_LEFT);
-            }
-        }else{
-            while((turnr < gmpc(MOT_RIGHT) && turnrspeed != 0) || turnl < gmpc(MOT_LEFT)){
-                if(turnr > gmpc(MOT_RIGHT) + 10l) off(MOT_RIGHT);
-                if(turnl > gmpc(MOT_LEFT) + 10l) off(MOT_LEFT);
-            }
-        }
-    }
-    drive_off();
-    msleep(30l);
-}
-/* \fn void left(int degrees, int radius)
- * \brief turns left degrees degrees at int radius radius
- * \param degrees degrees forward to go
- * \param radius radius at which to turn around
- */
-void left(float degrees, float radius){
-int turnlspeed;
-	long turnl=((2*radius-ks)*CMtoBEMF*PI)*(degrees/360.);
-	long turnr=((2*radius+ks)*CMtoBEMF*PI)*(degrees/360.);
-    if(turnr == 0l) return;
-    turnlspeed = round((float)turnl/(float)turnr*SPD);
-    msleep(30l);
-    if(turnr > 0l)
-      motor(MOT_RIGHT, SPD);
-    else
-      motor(MOT_RIGHT, -SPD);
-    if(turnlspeed < 0) turnlspeed = -turnlspeed;
-	if(turnl > 0l)
-	  motor(MOT_LEFT, turnlspeed);
-	else
-	  motor(MOT_LEFT, -turnlspeed);
-    turnr += gmpc(MOT_RIGHT);
-    turnl += gmpc(MOT_LEFT);
-    if(turnl - gmpc(MOT_LEFT) > 0l){
-        if(turnr - gmpc(MOT_RIGHT) > 0l){
-            while((turnl > gmpc(MOT_LEFT) && turnlspeed != 0) || turnr > gmpc(MOT_RIGHT)){
-                if(turnl < gmpc(MOT_LEFT) - 10l) off(MOT_LEFT);
-                if(turnr < gmpc(MOT_RIGHT) - 10l) off(MOT_RIGHT);
-            }
-        }else{
-            while((turnl > gmpc(MOT_LEFT) && turnlspeed != 0) || turnr < gmpc(MOT_RIGHT)){
-                if(turnl < gmpc(MOT_LEFT) - 10l) off(MOT_LEFT);
-                if(turnr > gmpc(MOT_RIGHT) + 10l) off(MOT_RIGHT);
-            }
-        }
-    }else{
-        if(turnr - gmpc(MOT_RIGHT) > 0l){
-            while((turnl < gmpc(MOT_LEFT) && turnlspeed != 0) || turnr > gmpc(MOT_RIGHT)){
-                if(turnl > gmpc(MOT_LEFT) + 10l) off(MOT_LEFT);
-                if(turnr < gmpc(MOT_RIGHT) - 10l) off(MOT_RIGHT);
-            }
-        }else{
-            while((turnl < gmpc(MOT_LEFT) && turnlspeed != 0) || turnr < gmpc(MOT_RIGHT)){
-                if(turnl > gmpc(MOT_LEFT) + 10l) off(MOT_LEFT);
-                if(turnr > gmpc(MOT_RIGHT) + 10l) off(MOT_RIGHT);
-            }
-        }
-    }
-    drive_off();
-    msleep(30l);
-}
-
-void multforward(float distance, float speedmult){//go forward a number of CM    NOT    backEMF counts
-	if(distance < 0l){
-		distance = -distance;
+			done=0;
 	}
-	long newdist;
-	newdist = distance*CMtoBEMF;//conversion ratio
-	long l = gmpc(MOT_LEFT)+newdist;
-	long r = gmpc(MOT_RIGHT)+newdist;
-	motor(MOT_LEFT,SPDl*speedmult);
-	motor(MOT_RIGHT,SPDr*speedmult);
-	while(gmpc(MOT_LEFT) < l && gmpc(MOT_RIGHT) < r){
-		if (gmpc(MOT_LEFT) >= l)
-			off(MOT_LEFT);
-		if (gmpc(MOT_RIGHT) >= r)
-			off(MOT_RIGHT);
-	}
-	drive_off();
-}
-void forward(float distance){//go forward a number of CM    NOT    backEMF counts
-	if(distance < 0l){
-		distance = -distance;
-	}
-	long newdist;
-	newdist = distance*CMtoBEMF;//conversion ratio
-	long l = gmpc(MOT_LEFT)+newdist;
-	long r = gmpc(MOT_RIGHT)+newdist;
-	motor(MOT_LEFT,SPDl);
-	motor(MOT_RIGHT,SPDr);
-	while(gmpc(MOT_LEFT) < l && gmpc(MOT_RIGHT) < r){
-		if (gmpc(MOT_LEFT) >= l)
-			off(MOT_LEFT);
-		if (gmpc(MOT_RIGHT) >= r)
-			off(MOT_RIGHT);
-	}
-	drive_off();
-	
-	/*mrp(MOT_RIGHT,SPDrb,newdist*rdistmultb);
-	mrp(MOT_LEFT,SPDlb,newdist);
-	bmd(MOT_RIGHT);
-	bmd(MOT_LEFT);*/
-}
-void backward(float distance){//go backward a number of CM    NOT    backEMF counts
-	if(distance < 0l){
-		distance = -distance;
-	}
-	long newdist;
-	newdist = distance*CMtoBEMF;
-	long l = gmpc(MOT_LEFT)-newdist;
-	long r = gmpc(MOT_RIGHT)-newdist;
-	motor(MOT_LEFT,-SPDlb);
-	motor(MOT_RIGHT,-SPDrb);
-	while(gmpc(MOT_LEFT) > l && gmpc(MOT_RIGHT) > r){
-		if (gmpc(MOT_LEFT) <= l)
-			off(MOT_LEFT);
-		if (gmpc(MOT_RIGHT) <= r)
-			off(MOT_RIGHT);
-	}
-	drive_off();
+	create_stop();
 }
 
 
