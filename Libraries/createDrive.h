@@ -226,7 +226,7 @@ void create_off(){
 void create_lineup(){//lines up the create on a black line
 	int done = 0;
 	float tstart = seconds();
-	int retry = 1;//don't retry ever
+	//int retry = 1;//don't retry ever
 	while(done < 4){//WORK ON THIS
 		msleep(5);
 		int lspd,rspd;
