@@ -1,6 +1,6 @@
 // Created on Sun January 31 2016
 
-//#include <kipr/botball.h>
+#include <kipr/botball.h>
 
 #include "drive.h"
 #include "generic.h"
@@ -20,6 +20,7 @@ int main() {
 	
 	
 	disable_servos();
+	return 0;
 }
 
 #endif
@@ -35,12 +36,19 @@ int main() {
 	claw_open();
 	enable_servos();
 	
-	forward(100);
-	/*
+	forward(30);
+	
 	msleep(500);
 	collect_poms();
-	*/
+	printf("Collected Initial Poms\n");
 	
+	
+	//left(30, 0);	//this is crashing the robot
+	
+	
+	disable_servos();
+	ao();
+	return 0;
 	
 }
 
@@ -78,6 +86,7 @@ int main() {
 int main() {
 	enable_servos();
 	
+	check_poms();
 	
 	disable_servos();
 	return 0;

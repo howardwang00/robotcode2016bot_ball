@@ -16,8 +16,8 @@
 #define ARM_DOWN 380	//arm down position, the arm is down on the ground
 #define ARM_UP 1871		//arm up position, for dumping in box
 #define ARM_DRIVE 720	//arm position for driving
-#define CLAW_OPEN 0	//claw open position
-#define CLAW_CLOSE 400	//claw close position
+#define CLAW_OPEN 800	//claw open position
+#define CLAW_CLOSE 1200	//claw close position
 
 //camera code
 #define RED 0	//for camera
@@ -48,6 +48,7 @@ void claw_close() {
 	msleep(50);
 }
 void collect_poms() {
+	claw_open();
 	arm_down();
 	msleep(500);
 	claw_close();
@@ -68,8 +69,14 @@ int check_poms() {
 	int red_pom_area = get_object_area(RED, 0);
 	printf("Green: %d", green_pom_area);
 	printf("Red: %d", red_pom_area);
+	if(green_pom_area > 100) {
+		return 0;
+	}
+	else if(red_pom_area > 100) {
+		return 1;
+	}
 	
-	return 0;	//no color blobs of either type detected
+	return -1;	//no color blobs of either type detected
 }
 
 
