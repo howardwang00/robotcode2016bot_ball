@@ -2,8 +2,8 @@
 
 #include <kipr/botball.h>
 
-#include "drive.h"
-#include "generic.h"
+//#include "drive.h"
+//#include "generic.h"
 
 #include "functions.h"
 
@@ -30,6 +30,7 @@ int main() {
 int main() {
 	printf("In Drivepath test");
 	
+	/*
 	//light_start(0);
 	shut_down_in(119.5);
 	arm_drive();
@@ -42,9 +43,10 @@ int main() {
 	collect_poms();
 	printf("Collected Initial Poms\n");
 	
-	
+	*/
 	//left(30, 0);	//this is crashing the robot
-	
+	//right(30, 0);	//this is crashing the robot
+	left(30, 5);
 	
 	disable_servos();
 	ao();
