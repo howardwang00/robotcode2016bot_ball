@@ -14,13 +14,13 @@
 
 #define SPD 100//turning
 #define SPDl 100.//left forward
-#define SPDr 130.//right forward
+#define SPDr 100.//right forward
 #define rdistmult 1.0
 #define SPDlb 100.//left backward
 #define SPDrb 100.//right backward
 #define rdistmultb (SPDrb/SPDlb)
 #define wheeldiameter 5.3 //Unique to each robot
-#define ks 14.5 //Unique to each robot
+#define ks 4.5 //Unique to each robot
 #define CMtoBEMF (850/(PI*wheeldiameter))
 
 void drive_off();
@@ -81,11 +81,19 @@ void right(float degrees, float radius){
     	if(turnl == 0l) return;
     	turnrspeed = round((float)turnr/(float)turnl*SPD);
     	msleep(30l);
+		
     	if(turnl > 0l)
       		motor(MOT_LEFT, SPD);
     	else
       		motor(MOT_LEFT, -SPD);
     	if(turnrspeed < 0) turnrspeed = -turnrspeed;
+			
+		//test code for fixing by Howard on 3/20/16
+		if(turnrspeed < 25) {
+			turnrspeed = 25;
+			//motor(MOT_LEFT, -turnlspeed);
+		}
+		
 		if(turnr > 0l)
 			motor(MOT_RIGHT, turnrspeed);
 		else
@@ -126,7 +134,7 @@ void right(float degrees, float radius){
  * \param radius radius at which to turn around
  */
 void left(float degrees, float radius){
-int turnlspeed;
+	int turnlspeed;
 	long turnl=((2*radius-ks)*CMtoBEMF*PI)*(degrees/360.);
 	long turnr=((2*radius+ks)*CMtoBEMF*PI)*(degrees/360.);
     if(turnr == 0l) return;
@@ -137,6 +145,12 @@ int turnlspeed;
     else
       motor(MOT_RIGHT, -SPD);
     if(turnlspeed < 0) turnlspeed = -turnlspeed;
+	
+	//test code for fixing by Howard on 3/20/16
+	if(turnlspeed < 25) {
+		turnlspeed = 25;
+		//motor(MOT_LEFT, -turnlspeed);
+	}
 	if(turnl > 0l)
 	  motor(MOT_LEFT, turnlspeed);
 	else

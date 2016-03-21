@@ -75,6 +75,7 @@ void drive(int mL,int mR){
  * \param radius radius at which to turn around
  */
 void right(float degrees, float radius){
+		printf("Turning right\n");
 		int turnrspeed;
 		long turnl=((2*radius+ks)*CMtoBEMF*PI)*(degrees/360.);
 		long turnr=((2*radius-ks)*CMtoBEMF*PI)*(degrees/360.);
@@ -82,18 +83,13 @@ void right(float degrees, float radius){
     	turnrspeed = round((float)turnr/(float)turnl*SPD);
     	msleep(30l);
 		
+		printf("Setting Speeds\n");
+		
     	if(turnl > 0l)
       		motor(MOT_LEFT, SPD);
     	else
       		motor(MOT_LEFT, -SPD);
     	if(turnrspeed < 0) turnrspeed = -turnrspeed;
-			
-		//test code for fixing by Howard on 3/20/16
-		if(turnrspeed < 25) {
-			turnrspeed = 25;
-			//motor(MOT_LEFT, -turnlspeed);
-		}
-		
 		if(turnr > 0l)
 			motor(MOT_RIGHT, turnrspeed);
 		else
@@ -134,12 +130,17 @@ void right(float degrees, float radius){
  * \param radius radius at which to turn around
  */
 void left(float degrees, float radius){
+	printf("Turning left\n");
+	
 	int turnlspeed;
 	long turnl=((2*radius-ks)*CMtoBEMF*PI)*(degrees/360.);
 	long turnr=((2*radius+ks)*CMtoBEMF*PI)*(degrees/360.);
     if(turnr == 0l) return;
     turnlspeed = round((float)turnl/(float)turnr*SPD);
     msleep(30l);
+	
+	printf("Setting Speeds\n");
+	
     if(turnr > 0l)
       motor(MOT_RIGHT, SPD);
     else
@@ -151,37 +152,58 @@ void left(float degrees, float radius){
 		turnlspeed = 25;
 		//motor(MOT_LEFT, -turnlspeed);
 	}
+	
+	printf("Step 1\n");
+	
 	if(turnl > 0l)
 	  motor(MOT_LEFT, turnlspeed);
 	else
 	  motor(MOT_LEFT, -turnlspeed);
     turnr += gmpc(MOT_RIGHT);
     turnl += gmpc(MOT_LEFT);
+	printf("Step 2\n");
     if(turnl - gmpc(MOT_LEFT) > 0l){
         if(turnr - gmpc(MOT_RIGHT) > 0l){
             while((turnl > gmpc(MOT_LEFT) && turnlspeed != 0) || turnr > gmpc(MOT_RIGHT)){
                 if(turnl < gmpc(MOT_LEFT) - 10l) off(MOT_LEFT);
                 if(turnr < gmpc(MOT_RIGHT) - 10l) off(MOT_RIGHT);
+				printf("In while loop 1\n");
             }
         }else{
             while((turnl > gmpc(MOT_LEFT) && turnlspeed != 0) || turnr < gmpc(MOT_RIGHT)){
                 if(turnl < gmpc(MOT_LEFT) - 10l) off(MOT_LEFT);
                 if(turnr > gmpc(MOT_RIGHT) + 10l) off(MOT_RIGHT);
+				printf("In while loop 2\n");
             }
         }
     }else{
         if(turnr - gmpc(MOT_RIGHT) > 0l){
             while((turnl < gmpc(MOT_LEFT) && turnlspeed != 0) || turnr > gmpc(MOT_RIGHT)){
-                if(turnl > gmpc(MOT_LEFT) + 10l) off(MOT_LEFT);
-                if(turnr < gmpc(MOT_RIGHT) - 10l) off(MOT_RIGHT);
+                if(turnl > gmpc(MOT_LEFT) + 10l) {
+					off(MOT_LEFT);
+					printf("Motor left has been turned off\n");
+				}
+                if(turnr < gmpc(MOT_RIGHT) - 10l) {
+					off(MOT_RIGHT);
+					printf("Motor right has been turned off\n");
+				}
+				printf("In while loop 3\n");
+				printf("Turnl: %ld\n", turnl);
+				printf("Turnr: %ld\n", turnr);
+				printf("gmpc for left: %d\n", gmpc(MOT_LEFT));
+				printf("gmpc for right: %d\n", gmpc(MOT_RIGHT));
+				printf("Left Wheel Turnspeed: %d\n\n", turnlspeed);
+				msleep(2000);
             }
         }else{
             while((turnl < gmpc(MOT_LEFT) && turnlspeed != 0) || turnr < gmpc(MOT_RIGHT)){
                 if(turnl > gmpc(MOT_LEFT) + 10l) off(MOT_LEFT);
                 if(turnr > gmpc(MOT_RIGHT) + 10l) off(MOT_RIGHT);
+				printf("In while loop 4\n");
             }
         }
     }
+	printf("Step 3\n");
     drive_off();
     msleep(30l);
 }

@@ -14,7 +14,7 @@
 #define CLAW 2	//claw port
 
 #define ARM_DOWN 380	//arm down position, the arm is down on the ground
-#define ARM_UP 1871		//arm up position, for dumping in box
+#define ARM_UP 1650		//arm up position, for dumping in box
 #define ARM_DRIVE 720	//arm position for driving
 #define CLAW_OPEN 800	//claw open position
 #define CLAW_CLOSE 1200	//claw close position

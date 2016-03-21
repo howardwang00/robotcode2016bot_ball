@@ -46,7 +46,10 @@ int main() {
 	*/
 	//left(30, 0);	//this is crashing the robot
 	//right(30, 0);	//this is crashing the robot
-	left(30, 5);
+	left(30, ks/2);
+	msleep(2000);
+	right(30, ks/2);
+	msleep(2000);
 	
 	disable_servos();
 	ao();
