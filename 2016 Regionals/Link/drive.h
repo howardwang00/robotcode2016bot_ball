@@ -75,6 +75,8 @@ void drive(int mL,int mR){
  * \param radius radius at which to turn around
  */
 void right(float degrees, float radius){
+		degrees = degrees * 5.5;	//custom code for testing
+	
 		int turnrspeed;
 		long turnl=((2*radius+ks)*CMtoBEMF*PI)*(degrees/360.);
 		long turnr=((2*radius-ks)*CMtoBEMF*PI)*(degrees/360.);
@@ -134,6 +136,8 @@ void right(float degrees, float radius){
  * \param radius radius at which to turn around
  */
 void left(float degrees, float radius){
+	degrees = degrees * 5.5;	//custom code for testing
+	
 	int turnlspeed;
 	long turnl=((2*radius-ks)*CMtoBEMF*PI)*(degrees/360.);
 	long turnr=((2*radius+ks)*CMtoBEMF*PI)*(degrees/360.);

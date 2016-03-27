@@ -16,8 +16,8 @@
 #define ARM_DOWN 380	//arm down position, the arm is down on the ground
 #define ARM_UP 1650		//arm up position, for dumping in box
 #define ARM_DRIVE 720	//arm position for driving
-#define CLAW_OPEN 800	//claw open position
-#define CLAW_CLOSE 1200	//claw close position
+#define CLAW_OPEN 850	//claw open position
+#define CLAW_CLOSE CLAW_OPEN + 400	//claw close position
 
 //camera code
 #define RED 0	//for camera
@@ -67,17 +67,63 @@ int check_poms() {
 	camera_update();
 	int green_pom_area = get_object_area(GREEN, 0);
 	int red_pom_area = get_object_area(RED, 0);
-	printf("Green: %d", green_pom_area);
-	printf("Red: %d", red_pom_area);
+	printf("Green: %d\n", green_pom_area);
+	printf("Red: %d\n", red_pom_area);
 	if(green_pom_area > 100) {
+		printf("Found green poms\n");
 		return 0;
 	}
 	else if(red_pom_area > 100) {
+		printf("Found red poms\n");
 		return 1;
 	}
 	
-	return -1;	//no color blobs of either type detected
+	return -1;	//no color blobs of either color detected
 }
-
+int pom_collection() {
+	printf("Time spent: %f\n", curr_time());
+	if(check_poms() == 0) {
+		return 0;
+	}
+	else if(check_poms() == 1) {
+		return 1;
+	}
+	else if(curr_time() < 10) {
+		backward(10);
+		forward(10);
+		msleep(50);
+		return pom_collection();
+	}
+	return -1;
+}
+void pom_collection_sequence() {
+	//robot must be at the first pom pile
+	int green = 0;	//whether green has been collected
+	int red = 0;	//whether red has been collected
+	start();	//start timer
+	int pile1Result = pom_collection();
+	if(pile1Result == 0) {
+		green = 1;
+		left(30, 0);
+		collect_poms();
+	}
+	else if(pile1Result == 1) {
+		red = 1;
+		left(30, 0);
+		collect_poms();
+	}
+	
+	
+	//at next pile
+	/*
+	int pile2Result = pom_collection();
+	if(pile2Result == 0) {	//found green
+		if(red == 1) {
+			collect_poms();
+			green = 1;
+		}
+	}
+	*/
+}
 
 #endif

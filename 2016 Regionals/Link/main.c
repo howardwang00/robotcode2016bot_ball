@@ -28,9 +28,9 @@ int main() {
 #define DRIVEPATH_TEST
 #ifdef DRIVEPATH_TEST
 int main() {
-	printf("In Drivepath test");
+	printf("In Drivepath test\n");
 	
-	/*
+	
 	//light_start(0);
 	shut_down_in(119.5);
 	arm_drive();
@@ -38,18 +38,18 @@ int main() {
 	enable_servos();
 	
 	forward(30);
-	
 	msleep(500);
 	collect_poms();
 	printf("Collected Initial Poms\n");
 	
-	*/
-	//left(30, 0);	//this is crashing the robot
-	//right(30, 0);	//this is crashing the robot
-	left(30, ks/2);
-	msleep(2000);
-	right(30, ks/2);
-	msleep(2000);
+	forward(45);
+	left(40, 0);
+	//face 1st pile
+	forward(70);
+	pom_collection_sequence();
+	
+	
+	
 	
 	disable_servos();
 	ao();
