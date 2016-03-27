@@ -6,9 +6,10 @@
 
 int main()
 {
-	
+	create_full();
 	create_connect();
-	create_left(45, 10, 30);
+  	printf("Connected to create");
+	create_left(45, 10, 60);
 	create_forward(600, 400);
 	create_right(70, 30, 120);
 	create_forward(600, 400);
