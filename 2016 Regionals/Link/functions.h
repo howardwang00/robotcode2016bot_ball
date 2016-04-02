@@ -8,18 +8,19 @@
 #include "generic.h"
 
 //two motors are in drive.h
-//#define MOT_LEFT 1	//left wheel port
-//#define MOT_RIGHT 0	//right wheel port
+//#define MOT_LEFT 3	//left wheel port
+//#define MOT_RIGHT 2	//right wheel port
 #define MAIN_ARM 3	//main arm port
 #define CLAW 2	//claw port
 
-#define ARM_DOWN 380	//arm down position, the arm is down on the ground
-#define ARM_UP 1650		//arm up position, for dumping in box
+#define ARM_DOWN 350	//arm down position, the arm is down on the ground
+#define ARM_UP 1670		//arm up position, for dumping in box
 #define ARM_DRIVE 720	//arm position for driving
-#define CLAW_OPEN 850	//claw open position
-#define CLAW_CLOSE CLAW_OPEN + 400	//claw close position
+#define CLAW_OPEN 750	//claw open position
+#define CLAW_CLOSE CLAW_OPEN + 600	//claw close position
+#define BIN_DOWN 834;
 
-//camera code
+//camera code	please disregard
 #define RED 0	//for camera
 #define GREEN 1
 #define NOTHING 234	//random #
@@ -89,8 +90,8 @@ int pom_collection() {
 		return 1;
 	}
 	else if(curr_time() < 10) {
-		backward(10);
-		forward(10);
+		backward(5);
+		forward(5);
 		msleep(50);
 		return pom_collection();
 	}
@@ -100,30 +101,64 @@ void pom_collection_sequence() {
 	//robot must be at the first pom pile
 	int green = 0;	//whether green has been collected
 	int red = 0;	//whether red has been collected
+	int gotPile1 = 0;
+	int gotPile2 = 0;
+	int gotPile3 = 0;
+	
 	start();	//start timer
 	int pile1Result = pom_collection();
 	if(pile1Result == 0) {
 		green = 1;
-		left(30, 0);
+		left(15, ks/2);
 		collect_poms();
+		collect_poms();
+		printf("Collected first pile of green poms\n");
+		gotPile1 = 1;
 	}
 	else if(pile1Result == 1) {
 		red = 1;
-		left(30, 0);
+		left(15, ks/2);
 		collect_poms();
+		collect_poms();
+		printf("Collected first pile of red poms\n");
+		gotPile1 = 1;
 	}
 	
+	forward(50);
+	msleep(100);
+	left(40, ks/2);
+	msleep(100);
+	forward(20);
 	
 	//at next pile
-	/*
+	start();	//start timer
+	msleep(100);
 	int pile2Result = pom_collection();
-	if(pile2Result == 0) {	//found green
-		if(red == 1) {
-			collect_poms();
-			green = 1;
-		}
+	if(pile2Result == 0 && green == 0) {	//found green
+		collect_poms();
+		collect_poms();
+		green = 1;
+		gotPile2 = 1;
 	}
-	*/
+	else if(pile2Result == 1 && red == 0) {	//found red
+		collect_poms();
+		collect_poms();
+		red = 1;
+		gotPile2 = 1;
+	}
+	else if(pile2Result == -1) {
+		gotPile2 = 0;
+	}
+	
+	if(green == 1 && red == 1) {
+		printf("Collected all\n");
+		//go to bin
+	}
+	else {
+		printf("Missed a pile, going to third to complete collection.\n");
+		//Go to third pile
+	}
+	
 }
 
 #endif

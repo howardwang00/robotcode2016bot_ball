@@ -37,15 +37,15 @@ int main() {
 	claw_open();
 	enable_servos();
 	
-	forward(30);
-	msleep(500);
 	collect_poms();
 	printf("Collected Initial Poms\n");
 	
-	forward(45);
-	left(40, 0);
-	//face 1st pile
 	forward(70);
+	msleep(500);
+	left(35, 0);
+	msleep(300);
+	//face 1st pile
+	forward(40);
 	pom_collection_sequence();
 	
 	
@@ -64,21 +64,8 @@ int main() {
 int main() {
 	enable_servos();
 	
-	arm_up();
-	msleep(1000);
-	claw_open();
-	msleep(1000);
-	arm_down();
-	msleep(1000);
-	claw_close();
-	msleep(5000);
-	arm_up();
-	msleep(1000);
-	/*
-	servo(3, 1000);
-	arm_up();
-	arm_down();
-	*/
+	collect_poms();
+	msleep(500);
 	
 	
 	disable_servos();
