@@ -2,32 +2,53 @@
 #include "createDrive.h"
 #include "generic.h"
 
-#define ARM_UP 500
-#define CLAW_OPEN 200
-#define CLAW_CLOSE 1O00
-#define ARM_DOWN -1
+#define ARM_UP 350
+#define CLAW_OPEN 700
+#define CLAW_CLOSE 1300
+#define ARM_DOWN 1980
+#define FORWARD_A 500
+#define FORWARD_B 150
 
 int main()
 {
-     printf("a\n");
-     printf("b\n");
+	
 	//create_full();
     printf("c\n");
-	create_connect();
+	//create_connect();
+
+	
     printf("d\n");
+    set_servo_position(0, ARM_UP);
+    set_servo_position(2, CLAW_CLOSE);
+    printf("e\n");
     enable_servos();
-    servo_set(2, ARM_UP, 0.5);
-	create_forward(810, 150);
-	create_right(75, 30, 120);
-  servo_set(0, CLAW_OPEN, 1);
-	create_forward(500, 150);
-  	create_block();
- 
-     //servo_set(0, X , 0.2);
-     servo_set(2, CLAW_DOWN, 0.5);
-     create_backward(270, 100);
+	/*create_forward(FORWARD_A, 150);
+	create_right(76, 30, 120);
+    create_forward(FORWARD_B, 150);
+    create_left(40, 30, 120);
+	create_forward(300, 150);*/
+    msleep(1000);
+    set_servo_position(0, ARM_DOWN);
+    set_servo_position(2, CLAW_OPEN);
+    //create_block();
+     printf("f\n");
+     msleep(2000);
+     set_servo_position(2, 1370);
+     msleep(500);
+     set_servo_position(2, 1400);
+     msleep(1000);
+     printf("g\n");
+     set_servo_position(0, 1800);
+     msleep(500);
+     set_servo_position(0, 1700);
+     msleep(500);
+     set_servo_position(0, 1500);
+     msleep(500);
+     //create_backward(270, 100);
+     msleep(1000);
      disable_servos();
   	
-	create_disconnect();
+	//create_disconnect();
+    ao();
      return 0;
 }
