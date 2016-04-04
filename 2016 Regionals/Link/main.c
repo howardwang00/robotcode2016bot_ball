@@ -10,16 +10,32 @@
 //#defines in functions.h
 
 //#define MAIN
-#ifdef main
+#ifdef MAIN
 int main() {
 	
-	
+	//light_start(0);
 	shut_down_in(119.5);
+	arm_drive();
+	claw_open();
+	bin_down();
 	enable_servos();
+	
+	collect_poms();
+	printf("Collected Initial Poms\n");
+	
+	forward(75);
+	msleep(500);
+	left(40, 0);
+	msleep(300);
+	//face 1st pile
+	forward(45);
+	pom_collection_sequence();
+	
 	
 	
 	
 	disable_servos();
+	ao();
 	return 0;
 }
 
@@ -35,18 +51,10 @@ int main() {
 	shut_down_in(119.5);
 	arm_drive();
 	claw_open();
+	bin_down();
 	enable_servos();
 	
-	collect_poms();
-	printf("Collected Initial Poms\n");
-	
-	forward(70);
-	msleep(500);
-	left(35, 0);
-	msleep(300);
-	//face 1st pile
-	forward(40);
-	pom_collection_sequence();
+	forward(100);
 	
 	
 	
