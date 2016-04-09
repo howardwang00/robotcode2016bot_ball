@@ -17,9 +17,9 @@
 #define ARM_DOWN 350	//arm down position, the arm is down on the ground
 #define ARM_UP 1670		//arm up position, for dumping in box
 #define ARM_DRIVE 720	//arm position for driving
-#define CLAW_OPEN 700	//claw open position
-#define CLAW_OPEN_DROP CLAW_OPEN + 350	//claw open position
-#define CLAW_CLOSE CLAW_OPEN + 650	//claw close position
+#define CLAW_OPEN 750	//claw open position
+#define CLAW_OPEN_DROP CLAW_OPEN + 300	//claw open position
+#define CLAW_CLOSE CLAW_OPEN + 600	//claw close position
 #define BIN_DOWN 400
 #define BIN_DUMP 1250
 
@@ -28,6 +28,8 @@
 #define GREEN 1
 #define NOTHING 234	//random #
 
+int green = 0;	//whether green has been collected
+int red = 0;	//whether red has been collected
 int pom_collection_turn = 0;	//even - left, odd - right
 
 void servo(int port, int position) {
@@ -121,10 +123,8 @@ int pom_collection() {
 	}
 	return -1;
 }
-void pom_collection_sequence() {
+void pomPileOne() {
 	//robot must be at the first pom pile
-	int green = 0;	//whether green has been collected
-	int red = 0;	//whether red has been collected
 	
 	start();	//start timer
 	int pile1Result = pom_collection();
@@ -132,70 +132,55 @@ void pom_collection_sequence() {
 	pom_collection_turn = 0;	//reset turn
 	if(pile1Result == 0) {
 		green = 1;
-		left(15, ks/2);
-		collect_poms();
-		collect_poms();
-		printf("Collected first pile of green poms\n");
+		printf("Collecting first pile of green poms\n");
 	}
 	else if(pile1Result == 1) {
 		red = 1;
-		left(15, ks/2);
-		collect_poms();
-		collect_poms();
-		printf("Collected first pile of red poms\n");
+		printf("Collecting first pile of red poms\n");
 	}
+	//backward(5);
+	left(15, ks/2);
+	off(MOT_RIGHT);
+	off(MOT_LEFT);
+	collect_poms();
+	collect_poms();
 	
-	forward(75);
-	msleep(100);
-	left(70, ks/2);
-	msleep(100);
-	forward(10);
-	
+}
+void pomPileTwo() {
 	//at next pile, pile 2
 	start();	//start timer
-	msleep(100);
 	int pile2Result = pom_collection();
 	backward(pom_collection_turn * 5);
 	pom_collection_turn = 0;	//reset turn
 	if(pile2Result == 0 && green == 0) {	//found green
-		collect_poms();
-		collect_poms();
 		green = 1;
 	}
 	else if(pile2Result == 1 && red == 0) {	//found red
+		red = 1;
+	}
+	collect_poms();
+	collect_poms();
+}
+void pomPileThree() {
+	printf("Missed a pile, going to third to complete collection.\n");
+	//Go to third pile
+	right(60, ks/2);
+	forward(40);
+	int pile3result = pom_collection();
+	backward(pom_collection_turn * 5);
+	pom_collection_turn = 0;	//reset turn
+	if(pile3result == 0 && green == 0) {
 		collect_poms();
+		green = 1;
+	}
+	else if(pile3result == 1 && red == 0) {
 		collect_poms();
 		red = 1;
 	}
-	
 	if(green == 1 && red == 1) {
 		printf("Collected all\n");
-		//go to bin
-		right(50, ks/2);
-		forward(75);
 	}
-	else {
-		printf("Missed a pile, going to third to complete collection.\n");
-		//Go to third pile
-		right(60, ks/2);
-		forward(40);
-		int pile3result = pom_collection();
-		backward(pom_collection_turn * 5);
-		pom_collection_turn = 0;	//reset turn
-		if(pile3result == 0 && green == 0) {
-			collect_poms();
-			green = 1;
-		}
-		else if(pile3result == 1 && red == 0) {
-			collect_poms();
-			red = 1;
-		}
-		if(green == 1 && red == 1) {
-			printf("Collected all\n");
-		}
-		//go to bin
-		
-	}
+	//go to bin
 	
 }
 

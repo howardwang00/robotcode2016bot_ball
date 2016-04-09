@@ -14,7 +14,7 @@
 
 #define SPD 100//turning
 #define SPDl 100.//left forward
-#define SPDr 100.//right forward
+#define SPDr 97.//right forward
 #define rdistmult 1.0
 #define SPDlb 100.//left backward
 #define SPDrb 100.//right backward
@@ -75,7 +75,7 @@ void drive(int mL,int mR){
  * \param radius radius at which to turn around
  */
 void right(float degrees, float radius){
-		degrees = degrees * 5.5;	//custom code for testing
+		degrees = degrees * 5.5;	//custom code, specialized for 2016 robot
 	
 		int turnrspeed;
 		long turnl=((2*radius+ks)*CMtoBEMF*PI)*(degrees/360.);
@@ -136,7 +136,7 @@ void right(float degrees, float radius){
  * \param radius radius at which to turn around
  */
 void left(float degrees, float radius){
-	degrees = degrees * 5.5;	//custom code for testing
+	degrees = degrees * 5.5;	//custom code, specialized for 2016 robot
 	
 	int turnlspeed;
 	long turnl=((2*radius-ks)*CMtoBEMF*PI)*(degrees/360.);
@@ -150,7 +150,7 @@ void left(float degrees, float radius){
       motor(MOT_RIGHT, -SPD);
     if(turnlspeed < 0) turnlspeed = -turnlspeed;
 	
-	//test code for fixing by Howard on 3/20/16
+	//test code for fixing on 3/20/16
 	if(turnlspeed < 25) {
 		turnlspeed = 25;
 		//motor(MOT_LEFT, -turnlspeed);

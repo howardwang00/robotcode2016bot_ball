@@ -9,7 +9,7 @@
 
 //#defines in functions.h
 
-//#define MAIN
+#define MAIN
 #ifdef MAIN
 int main() {
 	
@@ -21,18 +21,34 @@ int main() {
 	enable_servos();
 	
 	collect_poms();
-	printf("Collected Initial Poms\n");
+	printf("Collected Initial Poms in base\n");
 	
-	forward(75);
+	forward(60);
 	msleep(500);
-	left(40, 0);
+	left(30, 0);
 	msleep(300);
 	//face 1st pile
 	forward(45);
-	pom_collection_sequence();
+	pomPileOne();
 	
+	//go to pile 2
+	forward(75);
+	msleep(100);
+	left(70, ks/2);
+	msleep(100);
+	forward(10);
+	pomPileTwo();
 	
-	
+	if(green == 1 && red == 1) {
+		printf("Collected all\n");
+		//go to bin
+		right(50, ks/2);
+		forward(75);
+	}
+	else {
+		//do pom pile three only if robot does not have both one red and one green
+		pomPileThree();
+	}
 	
 	disable_servos();
 	ao();
@@ -41,7 +57,7 @@ int main() {
 
 #endif
 
-#define DRIVEPATH_TEST
+//#define DRIVEPATH_TEST
 #ifdef DRIVEPATH_TEST
 int main() {
 	printf("In Drivepath test\n");
@@ -54,10 +70,31 @@ int main() {
 	bin_down();
 	enable_servos();
 	
-	forward(100);
+	//forward(100);
 	
+	forward(10);
+	int green = 0;	//whether green has been collected
+	int red = 0;	//whether red has been collected
 	
-	
+	start();	//start timer
+	int pile1Result = pom_collection();
+	backward(pom_collection_turn * 5);
+	pom_collection_turn = 0;	//reset turn
+	if(pile1Result == 0) {
+		green = 1;
+		printf("Collecting first pile of green poms\n");
+	}
+	else if(pile1Result == 1) {
+		red = 1;
+		printf("Collecting first pile of red poms\n");
+	}
+	//backward(5);
+	left(15, ks/2);
+	off(MOT_RIGHT);
+	off(MOT_LEFT);
+	collect_poms();
+	collect_poms();
+	msleep(1000);
 	
 	disable_servos();
 	ao();
