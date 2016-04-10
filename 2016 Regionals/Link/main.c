@@ -23,19 +23,30 @@ int main() {
 	collect_poms();
 	printf("Collected Initial Poms in base\n");
 	
-	forward(60);
+	forward(70);
 	msleep(500);
-	left(30, 0);
+	left(35, 0);
 	msleep(300);
 	//face 1st pile
-	forward(45);
+	forward(40);
 	pomPileOne();
+	
+	/*
+	//4/9/16 Test Code
+	forward(20);
+	msleep(500);
+	left(15, 0);
+	msleep(300);
+	//face 1st pile
+	forward(80);
+	pomPileOne();
+	*/
 	
 	//go to pile 2
 	forward(75);
-	msleep(100);
-	left(70, ks/2);
-	msleep(100);
+	msleep(300);
+	left(80, ks/2);
+	msleep(300);
 	forward(10);
 	pomPileTwo();
 	
@@ -121,9 +132,12 @@ int main() {
 //#define CAMERA_TEST
 #ifdef CAMERA_TEST
 int main() {
+	bin_dump();
 	enable_servos();
-	
-	check_poms();
+
+	//check_poms();
+	start();	//start timer
+	pom_collection();
 	
 	disable_servos();
 	return 0;

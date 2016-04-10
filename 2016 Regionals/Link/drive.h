@@ -14,7 +14,7 @@
 
 #define SPD 100//turning
 #define SPDl 100.//left forward
-#define SPDr 97.//right forward
+#define SPDr 100.//right forward
 #define rdistmult 1.0
 #define SPDlb 100.//left backward
 #define SPDrb 100.//right backward
@@ -127,8 +127,20 @@ void right(float degrees, float radius){
             }
         }
     }
+	printf("Turned right\n");
+	msleep(50);
     drive_off();
+	
+	//code to turn the motors off in three different ways, 
+	//because of an unsolved problem with the Wallaby v17 not stopping a motor after turning
+	// (the motor turning backwards)	4/09/16
+	msleep(50);
+	motor(MOT_LEFT, 0);
+	motor(MOT_RIGHT, 0);
+	msleep(50);
+	ao();
     msleep(30l);
+	printf("Stopped Wheels\n");
 }
 /* \fn void left(int degrees, int radius)
  * \brief turns left degrees degrees at int radius radius
@@ -186,8 +198,20 @@ void left(float degrees, float radius){
             }
         }
     }
+	printf("Turned left\n");
+	msleep(50);
     drive_off();
+	
+	//code to turn the motors off in three different ways, 
+	//because of an unsolved problem with the Wallaby v17 not stopping a motor after turning
+	// (the motor turning backwards)	4/09/16
+	msleep(50);
+	motor(MOT_LEFT, 0);
+	motor(MOT_RIGHT, 0);
+	msleep(50);
+	ao();
     msleep(30l);
+	printf("Stopped Wheels\n");
 }
 
 void multforward(float distance, float speedmult){//go forward a number of CM    NOT    backEMF counts
