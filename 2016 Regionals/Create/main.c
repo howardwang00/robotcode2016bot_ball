@@ -193,6 +193,7 @@ int main()
     create_stop();
   
     //dropping composter
+    set_servo_position(ARM_PORT, 1750);
     msleep(500);
     set_servo_position(CLAW_PORT, CLAW_OPEN);
     msleep(500);
