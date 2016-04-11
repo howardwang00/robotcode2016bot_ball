@@ -15,7 +15,7 @@ int main() {
 	
 	//light_start(0);
 	shut_down_in(119.5);
-	arm_drive();
+	arm_up();
 	claw_open();
 	bin_down();
 	enable_servos();
@@ -23,12 +23,20 @@ int main() {
 	collect_poms();
 	printf("Collected Initial Poms in base\n");
 	
+	/*
 	forward(70);
 	msleep(500);
 	left(35, 0);
 	msleep(300);
 	//face 1st pile
-	forward(40);
+	forward(45);
+	pomPileOne();
+	*/
+	forward(45);
+	msleep(500);
+	left(40, 0);
+	//face 1st pile
+	forward(65);	//needs to be exact or else claw will hit table divider
 	pomPileOne();
 	
 	/*
@@ -43,11 +51,13 @@ int main() {
 	*/
 	
 	//go to pile 2
-	forward(75);
+	multforward(45, 0.50);
+	msleep(100);
+	forward(15);
 	msleep(300);
 	left(80, ks/2);
 	msleep(300);
-	forward(10);
+	forward(5);
 	pomPileTwo();
 	
 	if(green == 1 && red == 1) {
@@ -140,6 +150,15 @@ int main() {
 	pom_collection();
 	
 	disable_servos();
+	return 0;
+}
+#endif
+
+//#define DRIVE_TEST
+#ifdef DRIVE_TEST
+int main() {
+	forward(100);
+	msleep(500);
 	return 0;
 }
 #endif

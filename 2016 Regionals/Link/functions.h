@@ -15,14 +15,17 @@
 #define BIN 1	//bin port
 #define SECONDARY_ARM 1	//secondary arm port, secondary arm is for collecting two gold poms
 
-#define ARM_DOWN 350	//arm down position, the arm is down on the ground
+#define ARM_DOWN 425	//arm down position, the arm is down on the ground
 #define ARM_UP 1670		//arm up position, for dumping in box
-#define ARM_DRIVE 720	//arm position for driving
+#define ARM_MID 800	//arm position in the middle
 #define CLAW_OPEN 750	//claw open position
 #define CLAW_OPEN_DROP CLAW_OPEN + 300	//claw open position
 #define CLAW_CLOSE CLAW_OPEN + 600	//claw close position
 #define BIN_DOWN 450
 #define BIN_DUMP 1250
+#define GOLD_COLLECT 100	//collecting gold position
+#define SECONDARY_MID 100
+#define SECONDARY_BACK 100	//passive position
 
 //camera code	please disregard
 #define RED 0	//for camera
@@ -44,8 +47,8 @@ void arm_up() {
 	servo(MAIN_ARM, ARM_UP);
 	msleep(50);
 }
-void arm_drive() {
-	servo(MAIN_ARM, ARM_DRIVE);
+void arm_mid() {
+	servo(MAIN_ARM, ARM_MID);
 	msleep(50);
 }
 void claw_open() {
@@ -68,10 +71,29 @@ void bin_dump() {
 	servo(BIN, BIN_DUMP);
 	msleep(50);
 }
+void collect_gold() {
+	servo(SECONDARY_ARM, GOLD_COLLECT);
+	msleep(50);
+}
+void secondary_mid() {
+	servo(SECONDARY_ARM, SECONDARY_MID);
+	msleep(50);
+}
+void secondary_back() {
+	servo(SECONDARY_ARM, SECONDARY_BACK);
+	msleep(50);
+}
 void collect_poms() {
 	claw_open();
+	
+	//slowing down the arm
+	servo(MAIN_ARM, 1200);
+	msleep(100);
+	arm_mid();
+	msleep(100);
 	arm_down();
 	msleep(500);
+	
 	claw_close();
 	msleep(500);
 	arm_up();
@@ -81,6 +103,22 @@ void collect_poms() {
 	claw_open();
 	msleep(500);
 }
+/*
+void collect_poms_2() {
+	servo(CLAW, CLAW_OPEN + 150);
+	msleep(100);
+	arm_down();
+	msleep(700);
+	claw_close();
+	msleep(500);
+	arm_up();
+	msleep(500);
+	claw_open_drop();
+	msleep(300);
+	claw_open();
+	msleep(500);
+}
+*/
 int check_poms() {
 	camera_open();
 	camera_update();	//update many times for optimal results
@@ -88,8 +126,8 @@ int check_poms() {
 	camera_update();
 	int green_pom_area = get_object_area(GREEN, 0);
 	int red_pom_area = get_object_area(RED, 0);
-	printf("Green: %d\n", green_pom_area);
-	printf("Red: %d\n", red_pom_area);
+	//printf("Green: %d\n", green_pom_area);
+	//printf("Red: %d\n", red_pom_area);
 	if(green_pom_area > 100) {
 		printf("Found green poms\n");
 		camera_close();
@@ -146,7 +184,7 @@ void pomPileOne() {
 		printf("Collecting first pile of red poms\n");
 	}
 	//backward(5);
-	left(10, ks/2);
+	//left(5, ks/2);
 	off(MOT_RIGHT);
 	off(MOT_LEFT);
 	collect_poms();
@@ -195,6 +233,8 @@ void pomPileThree() {
 	collect_poms();
 	collect_poms();
 	//go to bin
+	left(90, ks/2);
+	forward(30);
 	
 }
 
