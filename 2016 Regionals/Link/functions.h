@@ -22,6 +22,7 @@
 #define CLAW_OPEN_DROP CLAW_OPEN + 300	//claw open position
 #define CLAW_CLOSE CLAW_OPEN + 650	//claw close position
 #define BIN_DOWN 450
+#define BIN_MID 1000
 #define BIN_DUMP 1250
 #define GOLD_COLLECT 100	//collecting gold position
 #define SECONDARY_MID 100
@@ -65,6 +66,10 @@ void claw_close() {
 }
 void bin_down() {
 	servo(BIN, BIN_DOWN);
+	msleep(50);
+}
+void bin_mid() {
+	servo(BIN, BIN_MID);
 	msleep(50);
 }
 void bin_dump() {
@@ -211,8 +216,7 @@ void pomPileTwo() {
 void pomPileThree() {
 	printf("Missed a pile, going to third to complete collection.\n");
 	//Go to third pile
-	right(90, ks/2);
-	forward(10);
+	right(120, ks/2);
 	/*
 	int pile3result = pom_collection();
 	//backward(pom_collection_turn * 4);
@@ -232,10 +236,6 @@ void pomPileThree() {
 	*/
 	collect_poms();
 	collect_poms();
-	//go to bin
-	left(90, ks/2);
-	forward(30);
-	
 }
 
 #endif

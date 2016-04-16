@@ -251,7 +251,7 @@ void forward(float distance){//go forward a number of CM    NOT    backEMF count
 	}
 	//drive_off();
 	off(MOT_LEFT);
-	msleep(100);	//specialized for 2016 robot because of left motor drifting
+	msleep(100);	//specialized for 2016 robot because of left motor drifting after right stopped
 	off(MOT_RIGHT);
 	
 	/*mrp(MOT_RIGHT,SPDrb,newdist*rdistmultb);

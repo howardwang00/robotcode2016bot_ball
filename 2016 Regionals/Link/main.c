@@ -31,9 +31,9 @@ int main() {
 	forward(45);
 	pomPileOne();
 	*/
-	forward(45);
+	forward(47);
 	msleep(500);
-	left(35, 0);
+	left(30, 0);
 	//face 1st pile
 	forward(60);	//needs to be exact or else claw will hit table divider
 	pomPileOne();
@@ -52,24 +52,33 @@ int main() {
 	//go to pile 2
 	multforward(45, 0.50);
 	msleep(100);
-	forward(10);
+	forward(15);
 	msleep(300);
 	left(85, ks/2);
 	msleep(300);
-	forward(5);
+	forward(10);
 	pomPileTwo();
 	
 	if(green == 1 && red == 1) {
 		printf("Collected all\n");
 		//go to bin
-		right(50, ks/2);
-		forward(75);
+		right(60, ks/2);
+		forward(100);
+		right(100, ks/2);
+		msleep(500);
+		bin_mid();
+		msleep(500);
+		bin_dump();
 	}
 	else {
 		//do pom pile three only if robot does not have both one red and one green
 		pomPileThree();
+		//go to bin
+		left(60, ks/2);
+		forward(60);
 	}
 	
+	msleep(2000);
 	disable_servos();
 	ao();
 	return 0;
