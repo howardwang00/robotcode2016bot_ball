@@ -12,7 +12,6 @@
 #define MAIN
 #ifdef MAIN
 int main() {
-	
 	//light_start(0);
 	shut_down_in(119.5);
 	arm_up();
@@ -34,9 +33,9 @@ int main() {
 	*/
 	forward(45);
 	msleep(500);
-	left(40, 0);
+	left(35, 0);
 	//face 1st pile
-	forward(65);	//needs to be exact or else claw will hit table divider
+	forward(60);	//needs to be exact or else claw will hit table divider
 	pomPileOne();
 	
 	/*
@@ -53,9 +52,9 @@ int main() {
 	//go to pile 2
 	multforward(45, 0.50);
 	msleep(100);
-	forward(15);
+	forward(10);
 	msleep(300);
-	left(80, ks/2);
+	left(85, ks/2);
 	msleep(300);
 	forward(5);
 	pomPileTwo();
@@ -142,12 +141,10 @@ int main() {
 //#define CAMERA_TEST
 #ifdef CAMERA_TEST
 int main() {
-	bin_dump();
-	enable_servos();
-
-	//check_poms();
+	
+	check_poms();
 	start();	//start timer
-	pom_collection();
+	//pom_collection();
 	
 	disable_servos();
 	return 0;

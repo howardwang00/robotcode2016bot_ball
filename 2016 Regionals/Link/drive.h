@@ -127,7 +127,7 @@ void right(float degrees, float radius){
             }
         }
     }
-	printf("Turned right\n");
+	//printf("Turned right\n");
 	msleep(50);
     drive_off();
 	
@@ -140,7 +140,7 @@ void right(float degrees, float radius){
 	msleep(50);
 	ao();
     msleep(30l);
-	printf("Stopped Wheels\n");
+	//printf("Stopped Wheels\n");
 }
 /* \fn void left(int degrees, int radius)
  * \brief turns left degrees degrees at int radius radius
@@ -198,7 +198,7 @@ void left(float degrees, float radius){
             }
         }
     }
-	printf("Turned left\n");
+	//printf("Turned left\n");
 	msleep(50);
     drive_off();
 	
@@ -209,9 +209,9 @@ void left(float degrees, float radius){
 	motor(MOT_LEFT, 0);
 	motor(MOT_RIGHT, 0);
 	msleep(50);
-	ao();
+	//ao();
     msleep(30l);
-	printf("Stopped Wheels\n");
+	//printf("Stopped Wheels\n");
 }
 
 void multforward(float distance, float speedmult){//go forward a number of CM    NOT    backEMF counts
@@ -239,6 +239,7 @@ void forward(float distance){//go forward a number of CM    NOT    backEMF count
 	long newdist;
 	newdist = distance*CMtoBEMF;//conversion ratio
 	long l = gmpc(MOT_LEFT)+newdist;
+	//long l = gmpc(MOT_LEFT)+newdist - newdist/30;	//specialized for 2016 robot
 	long r = gmpc(MOT_RIGHT)+newdist;
 	motor(MOT_LEFT,SPDl);
 	motor(MOT_RIGHT,SPDr);
@@ -248,7 +249,10 @@ void forward(float distance){//go forward a number of CM    NOT    backEMF count
 		if (gmpc(MOT_RIGHT) >= r)
 			off(MOT_RIGHT);
 	}
-	drive_off();
+	//drive_off();
+	off(MOT_LEFT);
+	msleep(100);	//specialized for 2016 robot because of left motor drifting
+	off(MOT_RIGHT);
 	
 	/*mrp(MOT_RIGHT,SPDrb,newdist*rdistmultb);
 	mrp(MOT_LEFT,SPDlb,newdist);

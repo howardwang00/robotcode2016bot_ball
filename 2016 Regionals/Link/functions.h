@@ -15,19 +15,19 @@
 #define BIN 1	//bin port
 #define SECONDARY_ARM 1	//secondary arm port, secondary arm is for collecting two gold poms
 
-#define ARM_DOWN 425	//arm down position, the arm is down on the ground
+#define ARM_DOWN 400	//arm down position, the arm is down on the ground
 #define ARM_UP 1670		//arm up position, for dumping in box
 #define ARM_MID 800	//arm position in the middle
 #define CLAW_OPEN 750	//claw open position
 #define CLAW_OPEN_DROP CLAW_OPEN + 300	//claw open position
-#define CLAW_CLOSE CLAW_OPEN + 600	//claw close position
+#define CLAW_CLOSE CLAW_OPEN + 650	//claw close position
 #define BIN_DOWN 450
 #define BIN_DUMP 1250
 #define GOLD_COLLECT 100	//collecting gold position
 #define SECONDARY_MID 100
 #define SECONDARY_BACK 100	//passive position
 
-//camera code	please disregard
+//camera code
 #define RED 0	//for camera
 #define GREEN 1
 #define NOTHING 234	//random #
@@ -128,12 +128,12 @@ int check_poms() {
 	int red_pom_area = get_object_area(RED, 0);
 	//printf("Green: %d\n", green_pom_area);
 	//printf("Red: %d\n", red_pom_area);
-	if(green_pom_area > 100) {
+	if(green_pom_area > 150 && green_pom_area > red_pom_area) {
 		printf("Found green poms\n");
 		camera_close();
 		return 0;
 	}
-	else if(red_pom_area > 100) {
+	else if(red_pom_area > 150) {
 		printf("Found red poms\n");
 		camera_close();
 		return 1;
